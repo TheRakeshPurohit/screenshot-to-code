@@ -7,6 +7,9 @@ from openai import AsyncOpenAI
 from image_generation.replicate import call_replicate
 
 
+MAX_CONCURRENT_REPLICATE_REQUESTS = 20
+
+
 async def process_tasks(
     prompts: List[str],
     api_key: str,
@@ -16,9 +19,16 @@ async def process_tasks(
     start_time = time.time()
     if model == "dalle3":
         tasks = [generate_image_dalle(prompt, api_key, base_url) for prompt in prompts]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
     else:
-        tasks = [generate_image_replicate(prompt, api_key) for prompt in prompts]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_REPLICATE_REQUESTS)
+
+        async def _limited(prompt: str) -> str:
+            async with semaphore:
+                return await generate_image_replicate(prompt, api_key)
+
+        tasks = [_limited(prompt) for prompt in prompts]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
     end_time = time.time()
     generation_time = end_time - start_time
     print(f"Image generation time: {generation_time:.2f} seconds")
