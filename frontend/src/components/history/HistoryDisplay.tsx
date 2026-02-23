@@ -187,11 +187,6 @@ export default function HistoryDisplay() {
                   >
                     {item.type}
                   </span>
-                  {item.selectedElementTag && (
-                    <code className="text-[10px] font-mono text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/30 px-1.5 py-0.5 rounded">
-                      &lt;{item.selectedElementTag}&gt;
-                    </code>
-                  )}
                   {item.parentVersion !== null && (
                     <span className="text-[10px] text-gray-400 dark:text-gray-500">
                       from v{item.parentVersion}
@@ -206,6 +201,14 @@ export default function HistoryDisplay() {
                   }`}
                 >
                   {item.summary}
+                  {item.selectedElementTag && (
+                    <>
+                      {" "}
+                      <span className="text-gray-300 dark:text-gray-600">&middot;</span>
+                      {" "}
+                      <code className="text-xs font-mono text-violet-600 dark:text-violet-400">&lt;{item.selectedElementTag}&gt;</code>
+                    </>
+                  )}
                 </p>
               </div>
 
