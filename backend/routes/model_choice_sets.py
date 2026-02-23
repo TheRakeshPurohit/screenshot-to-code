@@ -3,7 +3,7 @@ from llm import Llm
 # Video variants always use Gemini.
 VIDEO_VARIANT_MODELS = (
     Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
-    Llm.GEMINI_3_PRO_PREVIEW_LOW,
+    Llm.GEMINI_3_1_PRO_PREVIEW_HIGH,
 )
 
 # All API keys available.

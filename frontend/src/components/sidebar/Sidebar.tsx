@@ -13,6 +13,7 @@ import WorkingPulse from "../core/WorkingPulse";
 import ImageLightbox from "../ImageLightbox";
 import { Commit } from "../commits/types";
 import { removeHighlight } from "../select-and-edit/utils";
+import { CodeGenerationModel } from "../../lib/models";
 
 interface SidebarProps {
   showSelectAndEditFeature: boolean;
@@ -54,6 +55,13 @@ function getSelectedElementTag(commit: Commit | null): string | null {
   const html = commit.inputs.selectedElementHtml;
   if (!html) return null;
   return extractTagName(html);
+}
+
+function isSlowGeminiModel(model?: string): boolean {
+  return (
+    model === CodeGenerationModel.GEMINI_3_1_PRO_PREVIEW_HIGH ||
+    model === CodeGenerationModel.GEMINI_3_1_PRO_PREVIEW_MEDIUM
+  );
 }
 
 function Sidebar({
@@ -340,6 +348,12 @@ function Sidebar({
                 Time so far {elapsedSeconds ? `${elapsedSeconds}s` : "--"}
               </div>
             </div>
+          </div>
+        )}
+
+        {isSlowGeminiModel(selectedVariant?.model) && (
+          <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+            Slow, high quality model. May take 5-10 mins on some images/videos.
           </div>
         )}
 
