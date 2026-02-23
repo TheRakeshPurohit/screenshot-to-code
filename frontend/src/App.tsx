@@ -714,19 +714,19 @@ function App() {
 
       <main
         className={`${
-          showContentPanel && !isSettingsOpen
-            ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-[28rem]"
-            : "lg:pl-16"
+          isSettingsOpen
+            ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-16"
+            : showContentPanel
+              ? "flex flex-1 min-h-0 flex-col lg:h-full lg:pl-[28rem]"
+              : "lg:pl-16"
         } ${isCodingOrReady && !isSettingsOpen && mobilePane === "chat" ? "hidden lg:flex" : ""}`}
       >
         {isSettingsOpen ? (
-          <div className="h-dvh lg:h-screen">
-            <SettingsTab
-              settings={settings}
-              setSettings={setSettings}
-              onClose={() => setIsSettingsOpen(false)}
-            />
-          </div>
+          <SettingsTab
+            settings={settings}
+            setSettings={setSettings}
+            onClose={() => setIsSettingsOpen(false)}
+          />
         ) : (
           <>
             {appState === AppState.INITIAL && (

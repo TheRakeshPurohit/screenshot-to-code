@@ -1,7 +1,6 @@
 import React from "react";
 import { EditorTheme, Settings } from "../../types";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -28,66 +27,72 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-black">
-      {/* Header */}
-      <div className="flex items-center gap-3 border-b border-gray-200 dark:border-zinc-800 px-6 py-4">
-        <button
-          onClick={onClose}
-          className="flex items-center justify-center rounded-lg p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-zinc-800 transition-colors"
-        >
-          <LuArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Settings
-        </h1>
-      </div>
+    <div className="flex-1 overflow-y-auto">
+      <div className="px-4 py-4 lg:px-6 lg:py-6">
+        {/* Header */}
+        <div className="mb-6 flex items-center gap-3">
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center rounded-lg p-1 text-gray-400 transition-colors hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+          >
+            <LuArrowLeft className="h-5 w-5" />
+          </button>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Settings
+          </h1>
+        </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-6 py-8 space-y-8">
+        <div className="mx-auto max-w-lg space-y-6">
           {/* Image Generation */}
-          <section className="space-y-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              Image Generation
-            </h2>
-            <div className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-zinc-800 p-4">
-              <Label htmlFor="image-generation" className="cursor-pointer">
-                <div className="font-medium text-sm">
-                  DALL-E Placeholder Image Generation
-                </div>
-                <div className="font-light mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  More fun with it but if you want to save money, turn it off.
-                </div>
-              </Label>
-              <Switch
-                id="image-generation"
-                checked={settings.isImageGenerationEnabled}
-                onCheckedChange={() =>
-                  setSettings((s) => ({
-                    ...s,
-                    isImageGenerationEnabled: !s.isImageGenerationEnabled,
-                  }))
-                }
-              />
+          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                Image Generation
+              </h2>
             </div>
-          </section>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-700 dark:text-zinc-300">
+                    DALL-E Placeholder Images
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+                    More fun with it but if you want to save money, turn it off.
+                  </p>
+                </div>
+                <Switch
+                  id="image-generation"
+                  checked={settings.isImageGenerationEnabled}
+                  onCheckedChange={() =>
+                    setSettings((s) => ({
+                      ...s,
+                      isImageGenerationEnabled: !s.isImageGenerationEnabled,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          </div>
 
           {/* API Keys */}
-          <section className="space-y-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              API Keys
-            </h2>
-            <div className="space-y-4 rounded-lg border border-gray-200 dark:border-zinc-800 p-4">
+          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                API Keys
+              </h2>
+            </div>
+            <div className="space-y-4 p-4">
               <div>
-                <Label htmlFor="openai-api-key">
-                  <div className="font-medium text-sm">OpenAI API key</div>
-                  <div className="font-light mt-1 mb-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                    Only stored in your browser. Never stored on servers.
-                    Overrides your .env config.
-                  </div>
-                </Label>
+                <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                  OpenAI API key
+                </p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+                  Only stored in your browser. Never stored on servers. Overrides
+                  your .env config.
+                </p>
                 <Input
                   id="openai-api-key"
+                  className="mt-2"
                   placeholder="OpenAI API key"
                   value={settings.openAiApiKey || ""}
                   onChange={(e) =>
@@ -101,17 +106,16 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
 
               {!IS_RUNNING_ON_CLOUD && (
                 <div>
-                  <Label htmlFor="openai-base-url">
-                    <div className="font-medium text-sm">
-                      OpenAI Base URL (optional)
-                    </div>
-                    <div className="font-light mt-1 mb-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                      Replace with a proxy URL if you don't want to use the
-                      default.
-                    </div>
-                  </Label>
+                  <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                    OpenAI Base URL (optional)
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+                    Replace with a proxy URL if you don't want to use the
+                    default.
+                  </p>
                   <Input
                     id="openai-base-url"
+                    className="mt-2"
                     placeholder="OpenAI Base URL"
                     value={settings.openAiBaseURL || ""}
                     onChange={(e) =>
@@ -125,15 +129,16 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
               )}
 
               <div>
-                <Label htmlFor="anthropic-api-key">
-                  <div className="font-medium text-sm">Anthropic API key</div>
-                  <div className="font-light mt-1 mb-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                    Only stored in your browser. Never stored on servers.
-                    Overrides your .env config.
-                  </div>
-                </Label>
+                <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                  Anthropic API key
+                </p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+                  Only stored in your browser. Never stored on servers. Overrides
+                  your .env config.
+                </p>
                 <Input
                   id="anthropic-api-key"
+                  className="mt-2"
                   placeholder="Anthropic API key"
                   value={settings.anthropicApiKey || ""}
                   onChange={(e) =>
@@ -145,27 +150,27 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                 />
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* Screenshot Config */}
-          <section className="space-y-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              Screenshot by URL
-            </h2>
-            <div className="rounded-lg border border-gray-200 dark:border-zinc-800 p-4">
-              <Label htmlFor="screenshot-one-api-key">
-                <div className="font-light text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                  If you want to use URLs directly instead of taking the
-                  screenshot yourself, add a ScreenshotOne API key.{" "}
-                  <a
-                    href="https://screenshotone.com?via=screenshot-to-code"
-                    className="underline"
-                    target="_blank"
-                  >
-                    Get 100 screenshots/mo for free.
-                  </a>
-                </div>
-              </Label>
+          {/* Screenshot by URL */}
+          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                Screenshot by URL
+              </h2>
+            </div>
+            <div className="p-4">
+              <p className="text-xs text-gray-500 dark:text-zinc-400">
+                If you want to use URLs directly instead of taking the screenshot
+                yourself, add a ScreenshotOne API key.{" "}
+                <a
+                  href="https://screenshotone.com?via=screenshot-to-code"
+                  className="text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
+                  target="_blank"
+                >
+                  Get 100 screenshots/mo for free.
+                </a>
+              </p>
               <Input
                 id="screenshot-one-api-key"
                 className="mt-3"
@@ -179,20 +184,22 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                 }
               />
             </div>
-          </section>
+          </div>
 
           {/* Theme */}
-          <section className="space-y-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              Theme
-            </h2>
-            <div className="space-y-4 rounded-lg border border-gray-200 dark:border-zinc-800 p-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="app-theme">
-                  <div className="font-medium text-sm">App Theme</div>
-                </Label>
+          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                Theme
+              </h2>
+            </div>
+            <div className="divide-y divide-gray-100 dark:divide-zinc-700">
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-sm text-gray-700 dark:text-zinc-300">
+                  App Theme
+                </span>
                 <button
-                  className="flex rounded-md border border-input bg-transparent px-3 py-1.5 text-sm shadow-sm transition-colors hover:bg-gray-50 dark:hover:bg-zinc-800"
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:bg-zinc-700/50"
                   onClick={() => {
                     document.documentElement.classList.toggle("dark");
                     document.body.classList.toggle("dark");
@@ -201,13 +208,15 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                   Toggle dark mode
                 </button>
               </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="editor-theme">
-                  <div className="font-medium text-sm">Code Editor Theme</div>
-                  <div className="font-light mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-between px-4 py-3">
+                <div>
+                  <span className="text-sm text-gray-700 dark:text-zinc-300">
+                    Code Editor Theme
+                  </span>
+                  <p className="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">
                     Requires page refresh to update
-                  </div>
-                </Label>
+                  </p>
+                </div>
                 <Select
                   name="editor-theme"
                   value={settings.editorTheme}
@@ -215,7 +224,7 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                     handleThemeChange(value as EditorTheme)
                   }
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[140px]">
                     {capitalize(settings.editorTheme)}
                   </SelectTrigger>
                   <SelectContent>
@@ -225,7 +234,7 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                 </Select>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </div>
