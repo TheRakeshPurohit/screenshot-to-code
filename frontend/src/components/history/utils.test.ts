@@ -73,6 +73,8 @@ describe("History Utils", () => {
         summary: "Create",
         selectedElementTag: null,
         parentVersion: null,
+        images: [""],
+        videos: [],
       },
       {
         ...basicLinearHistory["1"],
@@ -80,6 +82,8 @@ describe("History Utils", () => {
         summary: "use better icons",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
       {
         ...basicLinearHistory["2"],
@@ -87,6 +91,8 @@ describe("History Utils", () => {
         summary: "make text red",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
     ]);
 
@@ -98,6 +104,8 @@ describe("History Utils", () => {
         summary: "Imported from code",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
       {
         ...basicLinearHistoryWithCode["1"],
@@ -105,6 +113,8 @@ describe("History Utils", () => {
         summary: "use better icons",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
       {
         ...basicLinearHistoryWithCode["2"],
@@ -112,6 +122,8 @@ describe("History Utils", () => {
         summary: "make text red",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
     ]);
 
@@ -123,6 +135,8 @@ describe("History Utils", () => {
         summary: "Create",
         selectedElementTag: null,
         parentVersion: null,
+        images: [""],
+        videos: [],
       },
       {
         ...basicBranchingHistory["1"],
@@ -130,6 +144,8 @@ describe("History Utils", () => {
         summary: "use better icons",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
       {
         ...basicBranchingHistory["2"],
@@ -137,6 +153,8 @@ describe("History Utils", () => {
         summary: "make text red",
         selectedElementTag: null,
         parentVersion: null,
+        images: [],
+        videos: [],
       },
       {
         ...basicBranchingHistory["3"],
@@ -144,6 +162,8 @@ describe("History Utils", () => {
         summary: "make text green",
         selectedElementTag: null,
         parentVersion: 2,
+        images: [],
+        videos: [],
       },
     ]);
   });

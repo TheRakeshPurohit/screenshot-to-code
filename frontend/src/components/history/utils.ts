@@ -36,6 +36,16 @@ function extractTagName(html: string): string {
   return match ? match[1].toLowerCase() : "element";
 }
 
+function getCommitMedia(commit: Commit): { images: string[]; videos: string[] } {
+  if (commit.type === "code_create") {
+    return { images: [], videos: [] };
+  }
+  return {
+    images: commit.inputs.images || [],
+    videos: commit.inputs.videos || [],
+  };
+}
+
 export function summarizeHistoryItem(commit: Commit): string {
   const commitType = commit.type;
   switch (commitType) {
@@ -59,17 +69,29 @@ export function getSelectedElementTag(commit: Commit): string | null {
   return extractTagName(html);
 }
 
-export const renderHistory = (history: Commit[]) => {
-  const renderedHistory = [];
+export type RenderedHistoryItem = Omit<Commit, "type"> & {
+  type: string;
+  summary: string;
+  selectedElementTag: string | null;
+  parentVersion: number | null;
+  images: string[];
+  videos: string[];
+};
+
+export const renderHistory = (history: Commit[]): RenderedHistoryItem[] => {
+  const renderedHistory: RenderedHistoryItem[] = [];
 
   for (let i = 0; i < history.length; i++) {
     const commit = history[i];
+    const media = getCommitMedia(commit);
     renderedHistory.push({
       ...commit,
       type: displayHistoryItemType(commit.type),
       summary: summarizeHistoryItem(commit),
       selectedElementTag: getSelectedElementTag(commit),
       parentVersion: setParentVersion(commit, history),
+      images: media.images,
+      videos: media.videos,
     });
   }
 
