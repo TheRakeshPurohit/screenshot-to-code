@@ -10,15 +10,13 @@ import {
 } from "../ui/select";
 import { capitalize } from "../../lib/utils";
 import { IS_RUNNING_ON_CLOUD } from "../../config";
-import { LuArrowLeft } from "react-icons/lu";
 
 interface Props {
   settings: Settings;
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;
-  onClose: () => void;
 }
 
-function SettingsTab({ settings, setSettings, onClose }: Props) {
+function SettingsTab({ settings, setSettings }: Props) {
   const handleThemeChange = (theme: EditorTheme) => {
     setSettings((s) => ({
       ...s,
@@ -30,46 +28,59 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
     <div className="flex-1 overflow-y-auto">
       <div className="px-4 py-4 lg:px-6 lg:py-6">
         {/* Header */}
-        <div className="mb-6 flex items-center gap-3">
-          <button
-            onClick={onClose}
-            className="flex items-center justify-center rounded-lg p-1 text-gray-400 transition-colors hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-          >
-            <LuArrowLeft className="h-5 w-5" />
-          </button>
+        <div className="mb-6">
           <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
             Settings
           </h1>
         </div>
 
         <div className="mx-auto max-w-lg space-y-6">
-          {/* Image Generation */}
+          {/* Theme */}
           <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
               <h2 className="text-sm font-medium text-gray-900 dark:text-white">
-                Image Generation
+                Theme
               </h2>
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
+            <div className="divide-y divide-gray-100 dark:divide-zinc-700">
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-sm text-gray-700 dark:text-zinc-300">
+                  App Theme
+                </span>
+                <button
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:bg-zinc-700/50"
+                  onClick={() => {
+                    document.documentElement.classList.toggle("dark");
+                    document.body.classList.toggle("dark");
+                  }}
+                >
+                  Toggle dark mode
+                </button>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3">
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-zinc-300">
-                    DALL-E Placeholder Images
-                  </p>
-                  <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
-                    More fun with it but if you want to save money, turn it off.
+                  <span className="text-sm text-gray-700 dark:text-zinc-300">
+                    Code Editor Theme
+                  </span>
+                  <p className="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">
+                    Requires page refresh to update
                   </p>
                 </div>
-                <Switch
-                  id="image-generation"
-                  checked={settings.isImageGenerationEnabled}
-                  onCheckedChange={() =>
-                    setSettings((s) => ({
-                      ...s,
-                      isImageGenerationEnabled: !s.isImageGenerationEnabled,
-                    }))
+                <Select
+                  name="editor-theme"
+                  value={settings.editorTheme}
+                  onValueChange={(value) =>
+                    handleThemeChange(value as EditorTheme)
                   }
-                />
+                >
+                  <SelectTrigger className="w-[140px]">
+                    {capitalize(settings.editorTheme)}
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cobalt">Cobalt</SelectItem>
+                    <SelectItem value="espresso">Espresso</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -152,6 +163,37 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
             </div>
           </div>
 
+          {/* Image Generation */}
+          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
+            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+                Image Generation
+              </h2>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-700 dark:text-zinc-300">
+                    Placeholder Images
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+                    More fun with it but if you want to save money, turn it off.
+                  </p>
+                </div>
+                <Switch
+                  id="image-generation"
+                  checked={settings.isImageGenerationEnabled}
+                  onCheckedChange={() =>
+                    setSettings((s) => ({
+                      ...s,
+                      isImageGenerationEnabled: !s.isImageGenerationEnabled,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Screenshot by URL */}
           <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
@@ -183,56 +225,6 @@ function SettingsTab({ settings, setSettings, onClose }: Props) {
                   }))
                 }
               />
-            </div>
-          </div>
-
-          {/* Theme */}
-          <div className="rounded-lg border border-gray-200 bg-white dark:border-zinc-700 dark:bg-zinc-800/60">
-            <div className="border-b border-gray-100 px-4 py-3 dark:border-zinc-700">
-              <h2 className="text-sm font-medium text-gray-900 dark:text-white">
-                Theme
-              </h2>
-            </div>
-            <div className="divide-y divide-gray-100 dark:divide-zinc-700">
-              <div className="flex items-center justify-between px-4 py-3">
-                <span className="text-sm text-gray-700 dark:text-zinc-300">
-                  App Theme
-                </span>
-                <button
-                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-300 dark:hover:bg-zinc-700/50"
-                  onClick={() => {
-                    document.documentElement.classList.toggle("dark");
-                    document.body.classList.toggle("dark");
-                  }}
-                >
-                  Toggle dark mode
-                </button>
-              </div>
-              <div className="flex items-center justify-between px-4 py-3">
-                <div>
-                  <span className="text-sm text-gray-700 dark:text-zinc-300">
-                    Code Editor Theme
-                  </span>
-                  <p className="mt-0.5 text-xs text-gray-500 dark:text-zinc-400">
-                    Requires page refresh to update
-                  </p>
-                </div>
-                <Select
-                  name="editor-theme"
-                  value={settings.editorTheme}
-                  onValueChange={(value) =>
-                    handleThemeChange(value as EditorTheme)
-                  }
-                >
-                  <SelectTrigger className="w-[140px]">
-                    {capitalize(settings.editorTheme)}
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="cobalt">Cobalt</SelectItem>
-                    <SelectItem value="espresso">Espresso</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </div>
         </div>

@@ -725,7 +725,6 @@ function App() {
           <SettingsTab
             settings={settings}
             setSettings={setSettings}
-            onClose={() => setIsSettingsOpen(false)}
           />
         ) : (
           <>
