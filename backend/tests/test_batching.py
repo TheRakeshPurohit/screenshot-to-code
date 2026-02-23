@@ -21,7 +21,7 @@ async def test_process_tasks_batches_replicate_calls(
         nonlocal concurrent, max_concurrent
         concurrent += 1
         max_concurrent = max(max_concurrent, concurrent)
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.01)
         concurrent -= 1
         return f"url-for-{prompt}"
 
@@ -48,7 +48,7 @@ async def test_remove_background_batches_calls(
         nonlocal concurrent, max_concurrent
         concurrent += 1
         max_concurrent = max(max_concurrent, concurrent)
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.01)
         concurrent -= 1
         return f"nobg-{image_url}"
 
