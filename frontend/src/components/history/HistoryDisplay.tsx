@@ -1,9 +1,15 @@
 import { renderHistory, RenderedHistoryItem } from "./utils";
 import { useProjectStore } from "../../store/project-store";
 import { BsChevronDown, BsChevronRight } from "react-icons/bs";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
-function MediaThumbnail({ item }: { item: RenderedHistoryItem }) {
+function MediaThumbnail({
+  item,
+  onPlayClick,
+}: {
+  item: RenderedHistoryItem;
+  onPlayClick?: () => void;
+}) {
   const firstImage = item.images[0];
   const firstVideo = item.videos[0];
 
@@ -19,7 +25,14 @@ function MediaThumbnail({ item }: { item: RenderedHistoryItem }) {
           draggable={false}
         />
       ) : firstVideo ? (
-        <div className="relative w-full h-full">
+        <button
+          type="button"
+          className="relative w-full h-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPlayClick?.();
+          }}
+        >
           <video
             src={firstVideo}
             className="w-full h-full object-cover"
@@ -35,15 +48,28 @@ function MediaThumbnail({ item }: { item: RenderedHistoryItem }) {
               <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
             </svg>
           </div>
-        </div>
+        </button>
       ) : null}
     </div>
   );
 }
 
-function ExpandedMedia({ item }: { item: RenderedHistoryItem }) {
+function ExpandedMedia({
+  item,
+  autoPlayVideo,
+}: {
+  item: RenderedHistoryItem;
+  autoPlayVideo?: boolean;
+}) {
   const hasImages = item.images.length > 0;
   const hasVideos = item.videos.length > 0;
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (autoPlayVideo && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [autoPlayVideo]);
 
   if (!hasImages && !hasVideos) return null;
 
@@ -68,6 +94,7 @@ function ExpandedMedia({ item }: { item: RenderedHistoryItem }) {
           className="rounded-md overflow-hidden border border-gray-200 dark:border-zinc-700"
         >
           <video
+            ref={i === 0 ? videoRef : undefined}
             src={vid}
             className="w-full h-auto max-h-48"
             controls
@@ -83,6 +110,19 @@ function ExpandedMedia({ item }: { item: RenderedHistoryItem }) {
 export default function HistoryDisplay() {
   const { commits, head, setHead } = useProjectStore();
   const [expandedHash, setExpandedHash] = useState<string | null>(null);
+  const [autoPlayHash, setAutoPlayHash] = useState<string | null>(null);
+
+  // Clear auto-play flag when the expanded item changes
+  useEffect(() => {
+    if (expandedHash !== autoPlayHash) {
+      setAutoPlayHash(null);
+    }
+  }, [expandedHash, autoPlayHash]);
+
+  const handleVideoPlayClick = useCallback((hash: string) => {
+    setExpandedHash(hash);
+    setAutoPlayHash(hash);
+  }, []);
 
   // Put all commits into an array and sort by created date (oldest first)
   const flatHistory = Object.values(commits).sort(
@@ -128,7 +168,10 @@ export default function HistoryDisplay() {
               </span>
 
               {/* Thumbnail */}
-              <MediaThumbnail item={item} />
+              <MediaThumbnail
+                item={item}
+                onPlayClick={() => handleVideoPlayClick(item.hash)}
+              />
 
               {/* Summary */}
               <div className="flex-1 min-w-0">
@@ -187,7 +230,10 @@ export default function HistoryDisplay() {
                     {item.summary}
                   </p>
                 )}
-                <ExpandedMedia item={item} />
+                <ExpandedMedia
+                  item={item}
+                  autoPlayVideo={autoPlayHash === item.hash}
+                />
               </div>
             )}
           </div>
