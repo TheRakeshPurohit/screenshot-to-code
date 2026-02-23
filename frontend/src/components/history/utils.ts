@@ -36,20 +36,13 @@ function extractTagName(html: string): string {
   return match ? match[1].toLowerCase() : "element";
 }
 
-export function summarizeHistoryItem(commit: Commit) {
+export function summarizeHistoryItem(commit: Commit): string {
   const commitType = commit.type;
   switch (commitType) {
     case "ai_create":
       return "Create";
-    case "ai_edit": {
-      const text = commit.inputs.text;
-      const elementHtml = commit.inputs.selectedElementHtml;
-      if (elementHtml) {
-        const tag = extractTagName(elementHtml);
-        return text ? `${text} [<${tag}>]` : `Edit <${tag}>`;
-      }
-      return text;
-    }
+    case "ai_edit":
+      return commit.inputs.text || "Edit";
     case "code_create":
       return "Imported from code";
     default: {
@@ -57,6 +50,13 @@ export function summarizeHistoryItem(commit: Commit) {
       throw new Error(`Unhandled case: ${exhaustiveCheck}`);
     }
   }
+}
+
+export function getSelectedElementTag(commit: Commit): string | null {
+  if (commit.type === "code_create") return null;
+  const html = commit.inputs.selectedElementHtml;
+  if (!html) return null;
+  return extractTagName(html);
 }
 
 export const renderHistory = (history: Commit[]) => {
@@ -68,6 +68,7 @@ export const renderHistory = (history: Commit[]) => {
       ...commit,
       type: displayHistoryItemType(commit.type),
       summary: summarizeHistoryItem(commit),
+      selectedElementTag: getSelectedElementTag(commit),
       parentVersion: setParentVersion(commit, history),
     });
   }

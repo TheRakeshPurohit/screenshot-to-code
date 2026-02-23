@@ -53,15 +53,22 @@ export default function HistoryDisplay() {
 
               {/* Summary */}
               <div className="flex-1 min-w-0">
-                <p
-                  className={`text-sm truncate ${
-                    isActive
-                      ? "font-medium text-gray-900 dark:text-white"
-                      : "text-gray-600 dark:text-gray-400"
-                  }`}
-                >
-                  {item.summary}
-                </p>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <p
+                    className={`text-sm truncate ${
+                      isActive
+                        ? "font-medium text-gray-900 dark:text-white"
+                        : "text-gray-600 dark:text-gray-400"
+                    }`}
+                  >
+                    {item.summary}
+                  </p>
+                  {item.selectedElementTag && (
+                    <code className="shrink-0 text-[10px] font-mono text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/30 px-1.5 py-0.5 rounded-md">
+                      &lt;{item.selectedElementTag}&gt;
+                    </code>
+                  )}
+                </div>
                 {item.parentVersion !== null && (
                   <p className="text-xs text-gray-400 dark:text-gray-500">
                     from v{item.parentVersion}
@@ -94,6 +101,11 @@ export default function HistoryDisplay() {
                 <p className="text-xs text-gray-500 dark:text-gray-400 break-words">
                   {item.summary}
                 </p>
+                {item.selectedElementTag && (
+                  <p className="text-xs text-violet-500 dark:text-violet-400 mt-1">
+                    Target: <code className="font-mono text-[10px] bg-violet-100 dark:bg-violet-900/30 px-1 py-0.5 rounded">&lt;{item.selectedElementTag}&gt;</code>
+                  </p>
+                )}
               </div>
             )}
           </div>
