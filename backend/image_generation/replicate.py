@@ -10,6 +10,9 @@ REMOVE_BACKGROUND_VERSION = (
 )
 POLL_INTERVAL_SECONDS = 0.1
 MAX_POLLS = 100
+MAX_CONCURRENT_REQUESTS = 20
+
+_replicate_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
 
 def _build_headers(api_token: str) -> dict[str, str]:
@@ -57,7 +60,7 @@ async def _run_prediction(
 ) -> Any:
     headers = _build_headers(api_token)
 
-    async with httpx.AsyncClient() as client:
+    async with _replicate_semaphore, httpx.AsyncClient() as client:
         try:
             response = await client.post(endpoint_url, headers=headers, json=payload)
             response.raise_for_status()
