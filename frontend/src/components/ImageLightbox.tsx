@@ -3,7 +3,7 @@ import { LuMinus, LuPlus, LuX } from "react-icons/lu";
 import { Dialog, DialogPortal, DialogOverlay } from "./ui/dialog";
 
 const MIN_ZOOM = 0.5;
-const MAX_ZOOM = 6;
+const MAX_ZOOM = 10;
 const DEFAULT_DISPLAY_WIDTH = 1000;
 
 interface ImageLightboxProps {
