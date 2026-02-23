@@ -261,15 +261,12 @@ class AgentToolRuntime:
                 summary={"error": "No valid image_urls"},
             )
 
-        max_concurrent = 20
-        semaphore = asyncio.Semaphore(max_concurrent)
-
-        async def _limited(url: str) -> str:
-            async with semaphore:
-                return await remove_background(url, REPLICATE_API_KEY)
-
-        tasks = [_limited(url) for url in unique_urls]
-        raw_results = await asyncio.gather(*tasks, return_exceptions=True)
+        batch_size = 20
+        raw_results: list[str | BaseException] = []
+        for i in range(0, len(unique_urls), batch_size):
+            batch = unique_urls[i : i + batch_size]
+            tasks = [remove_background(url, REPLICATE_API_KEY) for url in batch]
+            raw_results.extend(await asyncio.gather(*tasks, return_exceptions=True))
 
         results: List[Dict[str, Any]] = []
         for url, raw in zip(unique_urls, raw_results):
