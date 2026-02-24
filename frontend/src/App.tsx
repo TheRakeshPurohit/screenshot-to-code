@@ -324,9 +324,28 @@ function App() {
         finishThinkingEvent(variantIndex, "complete");
         finishAssistantEvent(variantIndex, "complete");
         finishToolEvent(variantIndex, "complete");
-        // Clear prompt as soon as a variant succeeds (textarea becomes visible)
-        setUpdateInstruction("");
-        setUpdateImages([]);
+        if (commit.type === "ai_edit") {
+          const {
+            updateInstruction: currentInstruction,
+            updateImages: currentImages,
+          } = useAppStore.getState();
+          const instructionUnchanged =
+            currentInstruction === commit.inputs.text;
+          const imagesUnchanged =
+            currentImages.length === commit.inputs.images.length &&
+            currentImages.every(
+              (image, index) => image === commit.inputs.images[index]
+            );
+
+          // This conditional clear handles three UX scenarios:
+          // 1) All variants fail: no completion event, so keep prompt/images for retry.
+          // 2) A variant completes and user has typed/changed images: do not clear.
+          // 3) A variant completes and user has not changed draft: clear for next edit.
+          if (instructionUnchanged && imagesUnchanged) {
+            setUpdateInstruction("");
+            setUpdateImages([]);
+          }
+        }
       },
       onVariantError: (variantIndex, error) => {
         console.error(`Error in variant ${variantIndex}:`, error);
