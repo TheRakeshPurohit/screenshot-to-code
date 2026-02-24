@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { generateCode } from "./generateCode";
-import { AppState, EditorTheme, Settings } from "./types";
+import { AppState, AppTheme, EditorTheme, Settings } from "./types";
 import { IS_RUNNING_ON_CLOUD } from "./config";
 import { PicoBadge } from "./components/messages/PicoBadge";
 import { OnboardingNote } from "./components/messages/OnboardingNote";
@@ -95,6 +95,10 @@ function App() {
     },
     "setting"
   );
+  const [appTheme, setAppTheme] = usePersistedState<AppTheme>(
+    AppTheme.SYSTEM,
+    "app-theme"
+  );
 
   const wsRef = useRef<WebSocket>(null);
   const lastThinkingEventIdRef = useRef<Record<number, string>>({});
@@ -122,6 +126,30 @@ function App() {
       }));
     }
   }, [settings.generatedCodeConfig, setSettings]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = () => {
+      const isDark =
+        appTheme === AppTheme.DARK ||
+        (appTheme === AppTheme.SYSTEM && mediaQuery.matches);
+      document.documentElement.classList.toggle("dark", isDark);
+      document.body.classList.toggle("dark", isDark);
+    };
+
+    applyTheme();
+
+    if (appTheme !== AppTheme.SYSTEM) {
+      return;
+    }
+
+    const onChange = () => applyTheme();
+    mediaQuery.addEventListener("change", onChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", onChange);
+    };
+  }, [appTheme]);
 
   const getAssetsById = () => useProjectStore.getState().assetsById;
 
@@ -716,6 +744,8 @@ function App() {
           <SettingsTab
             settings={settings}
             setSettings={setSettings}
+            appTheme={appTheme}
+            setAppTheme={setAppTheme}
           />
         ) : (
           <>
