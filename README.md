@@ -18,7 +18,7 @@ Supported AI models:
 
 - Gemini 3 Flash and Pro - Best models! (Google)
 - Claude Opus 4.5 - Best model! (Anthropic)
-- GPT-5.2, GPT-4.1 (OpenAI)
+- GPT-5.3, GPT-5.2, GPT-4.1 (OpenAI)
 - Other models are available as well but we recommend using the above models.
 - DALL-E 3 or Flux Schnell (using Replicate) for image generation
 
