@@ -415,7 +415,7 @@ class ModelSelectionStage:
         if generation_type == "update" and gemini_api_key and openai_api_key:
             return [
                 Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
-                Llm.GPT_5_3_CODEX_LOW,
+                Llm.GPT_5_2_CODEX_LOW,
             ]
 
         # Define models based on available API keys
